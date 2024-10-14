@@ -1,13 +1,16 @@
+// pages/index.tsx
 import { useState } from "react";
 import { useRouter } from "next/router";
 import userService from "../services/userService";
 import Input from "../components/Input";
 import Button from "../components/Button";
 import PhoneInput from "react-phone-input-2";
+import { usePopup } from "../context/PopupContext";
 import "react-phone-input-2/lib/style.css";
 
-const Home = () => {
+const Home: React.FC = () => {
   const router = useRouter();
+  const { showPopup } = usePopup();
   const [formData, setFormData] = useState({
     name: "",
     username: "",
@@ -33,15 +36,19 @@ const Home = () => {
       await userService.registerUser(formData);
       console.log("Registration successful");
       router.push("/login"); // Redirect to a success page
-    } catch (error) {
-      console.error("Registration failed:", error);
+    } catch (error:any) {
+      const errorMessage =
+        error.response?.data?.message || "An unexpected error occurred.";
+      showPopup(errorMessage); 
     }
   };
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-blue-300 to-purple-600 p-6">
       <header className="w-full p-4 shadow-lg">
-        <h1 className="text-white text-4xl font-bold text-center drop-shadow-lg">ECommerce Store</h1>
+        <h1 className="text-white text-4xl font-bold text-center drop-shadow-lg">
+          ECommerce Store
+        </h1>
       </header>
 
       <main className="flex-grow flex items-center justify-center">

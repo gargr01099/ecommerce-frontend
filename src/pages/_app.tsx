@@ -1,10 +1,16 @@
-import { AppProps } from "next/app";
 import '../styles/global.css';
+import { AppProps } from "next/app";
 import { PopupProvider } from "../context/PopupContext";
-// import Popup from "../components/Popup";
+import Popup from "../components/Popup";
 
-function MyApp({ Component, pageProps }: { Component: React.ComponentType<any>; pageProps: any }) {
-  return <Component {...pageProps} />;
-}
+const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {
+  return (
+    <PopupProvider>
+      <Component {...pageProps} />
+      <Popup />
+    </PopupProvider>
+  );
+};
 
 export default MyApp;
+
