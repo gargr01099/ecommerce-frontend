@@ -31,7 +31,12 @@ const Home = () => {
   };
 
   return (
+
     <div className="flex flex-col items-center justify-center min-h-screen">
+      <header className="w-full bg-gradient-to-r from-purple-500 to-blue-500 p-4 shadow-lg">
+    <h1 className="text-white text-4xl font-bold text-center">ECommerce Store</h1>
+  </header>
+  <div className="mt-8">
       <h1 className="text-3xl font-bold mb-4">Register</h1>
       <form onSubmit={handleSubmit} className="w-full max-w-md">
         <Input name="name" value={formData.name} onChange={handleChange} placeholder="Name" required />
@@ -44,6 +49,7 @@ const Home = () => {
         </select>
         <Button type="submit">Register</Button>
       </form>
+    </div>
     </div>
   );
 };
