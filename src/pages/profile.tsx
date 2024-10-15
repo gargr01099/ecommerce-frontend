@@ -88,7 +88,7 @@ const Profile: React.FC = () => {
           <nav className="flex flex-col space-y-4">
             <Button
               className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition duration-200 ease-in-out"
-              onClick={() => router.push("/profile")}
+              onClick={() => router.push("/editProfile")}
             >
               Manage Profile
             </Button>
