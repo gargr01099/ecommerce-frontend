@@ -26,8 +26,11 @@ const loginUser =async(userData:any)=>{
 }
 export const getAdminProfile = async()=>{
   try{
-    const response = await axios.get(`${API_URL}/me`);
-    console.log('Admin Profile fetched successfully:', response.data);
+    const response = await axios.get(`${API_URL}/me`,{
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("accessToken")}`, // Include token if required
+    },
+  });
     return response.data;
   }catch(error){
     console.error('Admin Profile fetch failed:', error);
@@ -36,9 +39,13 @@ export const getAdminProfile = async()=>{
 }
 
 export const getUserProfile = async(userId:number)=>{
-  try{
-    const response = await axios.get(`${API_URL}/single/${userId}`);
-    console.log('User Profile fetched successfully:', userId); 
+  try {
+    const response = await axios.get(`${API_URL}/single/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`, // Include token if required
+      },
+    });
+    console.log('User Profile fetched successfully:', response.data);
     return response.data;
   }catch(error){
     console.error('User Profile fetch failed:', error);

@@ -17,11 +17,22 @@ const Profile: React.FC = () => {
   useEffect(() => {
     const storedUserId = localStorage.getItem("userId");
     const storedRole = localStorage.getItem("role");   
+    const accessToken = localStorage.getItem("accessToken"); // Get access token
+
+    if (!accessToken) {
+      setError("You must be logged in to view this page.");
+      router.push("/login"); // Redirect to login if not authenticated
+      return;
+    }
+
     if (storedUserId && storedRole) {
       setUserId(storedUserId);
       setRole(storedRole);
+    } else {
+      setError("User data not found.");
+      router.push("/login"); // Redirect if user data is missing
     }
-  }, []);
+  }, [router]);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -46,7 +57,9 @@ const Profile: React.FC = () => {
         setLoading(false);
       }
     };
+    if(userId && role ){
     fetchProfile();
+    }
   }, [role, userId, showPopup]);
 
   const handleLogout = () => {

@@ -31,6 +31,7 @@ const Login: React.FC = () => {
       // Store user information in localStorage for future reference
       localStorage.setItem("userId", userData.user.id);
       localStorage.setItem("role", userData.user.role);
+      localStorage.setItem("accessToken", userData.accessToken); // Ensure you save the access token
       console.log("userId", userData.user.id);   
       console.log("role", userData.user.role);   
       setUser(userData); // Store user data in state
@@ -48,10 +49,10 @@ const Login: React.FC = () => {
     if (redirect && user) { // Check if redirect is true and user is defined
         console.log("Redirecting...");
         console.log("User:", user);
-      if (user.role === "admin") {
+      if (user.user.role === "admin") {
         console.log("Admin login successful");
         router.push("/profile"); // Redirect admin to profile
-      } else if (user.role === "user") {
+      } else if (user.user.role === "user") {
         console.log("User login successful");
         router.push("/profile"); // Redirect user to profile
       }
