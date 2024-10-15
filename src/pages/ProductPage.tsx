@@ -1,8 +1,10 @@
 "use client"; 
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useRouter } from "next/router";
 
 const ProductPage: React.FC = () => {
+  const router = useRouter();
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -30,6 +32,55 @@ const ProductPage: React.FC = () => {
     fetchProducts();
   }, []);
 
+  const handleAddToCart = (productId: number) => {
+    // Logic to add the product to the cart
+    console.log(`Product ${productId} added to cart.`);
+    // You can update the state or use a context to manage cart items
+  };
+
+  const handleBuyNow = async (product: any) => {
+    const accessToken = localStorage.getItem("accessToken");
+    if (!accessToken) {
+      alert("Please log in to place an order.");
+      router.push("/login");
+      return;
+    }
+
+    const shippingAddress = {
+      phone: "+1-234-567-8900",
+      name: "Jane Doe",
+      address: "456 Elm St",
+      city: "Metropolis",
+      postCode: "54321",
+      state: "NY",
+      country: "USA",
+    };
+
+    const orderData = {
+      shippingAddress,
+      orderedProducts: [
+        {
+          id: product.id, // Product ID
+          product_unit_price: product.price, // Price of the product
+          product_quantity: 1, // You can modify this based on user input
+        },
+      ],
+    };
+
+    try {
+      const response = await axios.post("http://localhost:3001/api/v1/orders/", orderData, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      console.log("Order placed successfully:", response.data);
+      alert("Order placed successfully!");
+    } catch (error) {
+      console.error("Error placing order:", error);
+      alert("Failed to place order.");
+    }
+  };
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div className="text-red-500">{error}</div>;
 
@@ -47,6 +98,7 @@ const ProductPage: React.FC = () => {
               <th className="py-2 px-4">Title</th>
               <th className="py-2 px-4">Price</th>
               <th className="py-2 px-4">Stock</th>
+              <th className="py-2 px-4">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -56,6 +108,20 @@ const ProductPage: React.FC = () => {
                 <td className="py-2 px-4">{product.title}</td>
                 <td className="py-2 px-4">{product.price}</td>
                 <td className="py-2 px-4">{product.stock}</td>
+                <td className="py-2 px-4">
+                  <button
+                    className="text-blue-600 hover:underline mr-4"
+                    onClick={() => handleAddToCart(product.id)}
+                  >
+                    Add to Cart
+                  </button>
+                  <button
+                    className="text-blue-600 hover:underline"
+                    onClick={() => handleBuyNow(product)}
+                  >
+                    Buy Now
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>

@@ -66,7 +66,7 @@ const Profile: React.FC = () => {
   const handleLogout = () => {
     localStorage.removeItem("userId");
     localStorage.removeItem("role");
-    localStorage.removeItem("token");
+    localStorage.removeItem("accessToken");
     router.push("/login");
   };
 
@@ -75,7 +75,7 @@ const Profile: React.FC = () => {
 
   return (
     <div className="flex flex-col min-h-screen p-6 bg-gradient-to-br from-indigo-300 to-purple-600">
-      <header className="w-full p-4 shadow-lg bg-white rounded-lg">
+      <header className="w-full p-4 shadow-lg bg-white rounded-lg mb-6">
         <h1 className="text-gray-800 text-4xl font-bold text-center">
           Welcome, {userProfile?.name}!
         </h1>
@@ -92,13 +92,6 @@ const Profile: React.FC = () => {
             >
               Manage Profile
             </Button>
-            <Button
-                  className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg transition duration-200 ease-in-out"
-                  onClick={() => router.push("/ProductPage")}
-                >
-                  List Products
-                </Button>
-
             {role === "admin" && (
               <>
                 <Button
@@ -107,7 +100,6 @@ const Profile: React.FC = () => {
                 >
                   Users List
                 </Button>
-
                 <Button
                   className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg transition duration-200 ease-in-out"
                   onClick={() => router.push("/admin/ProductsList")}
@@ -130,6 +122,12 @@ const Profile: React.FC = () => {
             )}
             {role === "user" && (
               <>
+                <Button
+                  className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg transition duration-200 ease-in-out"
+                  onClick={() => router.push("/ProductPage")}
+                >
+                  List Products
+                </Button>
                 <Button
                   className="bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-4 rounded-lg transition duration-200 ease-in-out"
                   onClick={() => router.push("/user/cart")}
