@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { getAdminProfile, getUserProfile } from "../services/userService";
@@ -11,12 +11,12 @@ const Profile: React.FC = () => {
   const [userProfile, setUserProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [userId, setUserId] = useState<string | null>(null);    
-  const [role, setRole] = useState<string | null>(null);    
+  const [userId, setUserId] = useState<string | null>(null);
+  const [role, setRole] = useState<string | null>(null);
 
   useEffect(() => {
     const storedUserId = localStorage.getItem("userId");
-    const storedRole = localStorage.getItem("role");   
+    const storedRole = localStorage.getItem("role");
     const accessToken = localStorage.getItem("accessToken");
 
     if (!accessToken) {
@@ -57,7 +57,7 @@ const Profile: React.FC = () => {
         setLoading(false);
       }
     };
-    
+
     if (userId && role) {
       fetchProfile();
     }
@@ -92,8 +92,16 @@ const Profile: React.FC = () => {
             >
               Manage Profile
             </Button>
+
             {role === "admin" && (
               <>
+                <Button
+                  className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition duration-200 ease-in-out"
+                  onClick={() => router.push("/admin/Userslist")}
+                >
+                  Users List
+                </Button>
+
                 <Button
                   className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg transition duration-200 ease-in-out"
                   onClick={() => router.push("/admin/products")}
@@ -143,11 +151,21 @@ const Profile: React.FC = () => {
         <section className="flex-grow p-6 bg-white rounded-lg shadow-lg ml-4">
           <h2 className="text-2xl font-bold mb-6">Profile Information</h2>
           <div className="space-y-4">
-            <p><strong>Name:</strong> {userProfile?.name}</p>
-            <p><strong>Email:</strong> {userProfile?.email}</p>
-            <p><strong>Address:</strong> {userProfile?.address || "N/A"}</p>
-            <p><strong>Phone:</strong> {userProfile?.phone || "N/A"}</p>
-            <p><strong>Role:</strong> {userProfile?.role}</p>
+            <p>
+              <strong>Name:</strong> {userProfile?.name}
+            </p>
+            <p>
+              <strong>Email:</strong> {userProfile?.email}
+            </p>
+            <p>
+              <strong>Address:</strong> {userProfile?.address || "N/A"}
+            </p>
+            <p>
+              <strong>Phone:</strong> {userProfile?.phone || "N/A"}
+            </p>
+            <p>
+              <strong>Role:</strong> {userProfile?.role}
+            </p>
           </div>
 
           {role === "user" && (
