@@ -15,16 +15,18 @@ const registerUser = async (userData:any) => {
 const loginUser =async(userData:any)=>{
   try{
     const response =await axios.post(`${API_URL}/signin`,userData);
+    const {accessToken}= response.data;
     console.log('Login successful:', response.data);  
+    localStorage.setItem('accessToken', accessToken); // Store the access token
     return response.data;
   }catch(error){
     console.error('Login failed:', error);  
     throw error; // Rethrow or handle as needed 
   }
 }
-const getAdminProfile = async(userData:any)=>{
+export const getAdminProfile = async()=>{
   try{
-    const response = await axios.get(`${API_URL}/me`,userData);
+    const response = await axios.get(`${API_URL}/me`);
     console.log('Admin Profile fetched successfully:', response.data);
     return response.data;
   }catch(error){
@@ -33,12 +35,10 @@ const getAdminProfile = async(userData:any)=>{
   }
 }
 
-const getUserProfile = async(userData:any)=>{
+export const getUserProfile = async(userId:number)=>{
   try{
-    const response = await axios.get(`${API_URL}/single/${userData.id}`,userData );
-    console.log('User Profile fetched successfully:', userData.id);
-    console.log('User Profile fetched successfully:', userData); 
-        console.log('User Profile fetched successfully:', response.data);
+    const response = await axios.get(`${API_URL}/single/${userId}`);
+    console.log('User Profile fetched successfully:', userId); 
     return response.data;
   }catch(error){
     console.error('User Profile fetch failed:', error);
@@ -48,7 +48,5 @@ const getUserProfile = async(userData:any)=>{
 
 export default {
   registerUser,
-  loginUser,
-  getAdminProfile,
-  getUserProfile
+  loginUser
 };

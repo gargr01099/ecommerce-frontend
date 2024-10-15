@@ -1,8 +1,7 @@
-'use client'    
+'use client';
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import axios from "axios";
-import userService from "../services/userService";
+import { getAdminProfile, getUserProfile } from "../services/userService";
 import Button from "../components/Button";
 import { usePopup } from "../context/PopupContext";
 
@@ -15,47 +14,45 @@ const Profile: React.FC = () => {
   const [userId, setUserId] = useState<string | null>(null);    
   const [role, setRole] = useState<string | null>(null);    
 
-  useEffect(()=>{
-    const storedUserId= localStorage.getItem("userId");
+  useEffect(() => {
+    const storedUserId = localStorage.getItem("userId");
     const storedRole = localStorage.getItem("role");   
-    if(storedUserId && storedRole){
+    if (storedUserId && storedRole) {
       setUserId(storedUserId);
       setRole(storedRole);
     }
-},[]);
-
-
+  }, []);
 
   useEffect(() => {
     const fetchProfile = async () => {
-        if(!userId || !role){
-            setError("User is not Logged in.");
-            setLoading(false);
-            return;
-        }
+      if (!userId || !role) {
+        setError("User is not logged in.");
+        setLoading(false);
+        return;
+      }
+
       try {
         let profileData;
         if (role === "admin") {
-          profileData = await userService.getAdminProfile(userId);
+          profileData = await getAdminProfile();
         } else {
-          profileData = await userService.getUserProfile({ id: userId });
+          profileData = await getUserProfile(Number(userId));
         }
         setUserProfile(profileData);
-        setLoading(false);
       } catch (err) {
         setError("Failed to fetch profile.");
         showPopup("Failed to fetch profile");
+      } finally {
         setLoading(false);
       }
     };
-
     fetchProfile();
   }, [role, userId, showPopup]);
 
   const handleLogout = () => {
-    // Clear localStorage or session data
     localStorage.removeItem("userId");
     localStorage.removeItem("role");
+    localStorage.removeItem("token"); // Clear token if necessary
     router.push("/login");
   };
 
