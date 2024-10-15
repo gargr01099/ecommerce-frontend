@@ -1,5 +1,3 @@
-// pages/admin/addProduct.tsx
-
 import { useState } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
@@ -20,8 +18,10 @@ const AddProduct: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Handles input changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, index?: number) => {
     const { name, value } = e.target;
+
     if (name === "images" && index !== undefined) {
       const updatedImages = [...formData.images];
       updatedImages[index] = value;
@@ -29,32 +29,47 @@ const AddProduct: React.FC = () => {
     } else {
       setFormData({ ...formData, [name]: value });
     }
+
+    console.log(`Updated form data:`, formData);
   };
 
+  // Handles file input changes
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     setFileImages(files);
+    console.log(`Files selected:`, files);
   };
 
+  // Handles form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
 
     const productData = new FormData();
+    
+    // Append the string data to FormData
     productData.append("title", formData.title);
     productData.append("description", formData.description);
     productData.append("price", String(formData.price));
     productData.append("stock", String(formData.stock));
-    
-    // Append URLs
-    formData.images.forEach((image) => {
-      if (image) productData.append("images", image);
+
+    console.log("Appending product details:");
+    console.log(`Title: ${formData.title}`);
+    console.log(`Description: ${formData.description}`);
+    console.log(`Price: ${formData.price}`);
+    console.log(`Stock: ${formData.stock}`);
+
+    formData.images.forEach((image, index) => {
+      if (image) {
+        productData.append(`images[${index}]`, image);
+        console.log(`Appended image URL ${index + 1}:`, image);
+      }
     });
 
-    // Append file images
-    fileImages.forEach((file) => {
-      productData.append("images", file); // Assuming your backend accepts multiple images
+    fileImages.forEach((file, index) => {
+      productData.append("images", file);
+      console.log(`Appended file image ${index + 1}:`, file);
     });
 
     try {
@@ -64,10 +79,11 @@ const AddProduct: React.FC = () => {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
       });
+      console.log("Product added successfully:", response.data);
       showPopup("Product added successfully!");
       router.push("/admin/products"); // Redirect after success
-    } catch (error) {
-      console.error("Error adding product:", error);
+    } catch (error: any) {
+      console.error("Error adding product:", error.response?.data || error);
       setError("Failed to add product. Please try again.");
       showPopup("Failed to add product.");
     } finally {
