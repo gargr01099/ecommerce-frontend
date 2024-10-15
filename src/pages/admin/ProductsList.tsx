@@ -1,4 +1,3 @@
-// pages/admin/ProductsList.tsx
 "use client"; 
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -12,20 +11,24 @@ const ProductsList: React.FC = () => {
 
   useEffect(() => {
     const fetchProducts = async () => {
-      try {
-        const response = await axios.get("http://localhost:3001/api/v1/products/", {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-        });
-        setProducts(response.data);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-        setError("Failed to fetch products.");
-      } finally {
-        setLoading(false);
-      }
-    };
+        try {
+          const response = await axios.get("http://localhost:3001/api/v1/products/");
+          console.log("API Response:", response.data); // Log the response data
+          if (Array.isArray(response.data)) {
+            setProducts(response.data); // Directly set if response is an array
+          } else if (response.data.products) {
+            setProducts(response.data.products); // Access the products array if nested
+          } else {
+            throw new Error("Unexpected data format");
+          }
+        } catch (error) {
+          console.error("Error fetching products:", error);
+          setError("Failed to fetch products.");
+        } finally {
+          setLoading(false);
+        }
+      };
+      
 
     fetchProducts();
   }, []);

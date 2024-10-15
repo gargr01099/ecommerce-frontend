@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
 import Button from "../../components/Button";
@@ -16,32 +16,35 @@ const AddProduct: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Handles input changes
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+    const userRole = localStorage.getItem("role"); 
+    if (!token || userRole !== "admin") {
+      router.push("/login"); 
+    }
+  }, [router]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-    console.log(`Updated form data:`, formData);
   };
 
-  // Handles form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
 
+    if (formData.price < 0 || formData.stock < 0) {
+      setError("Price and stock must be non-negative.");
+      setLoading(false);
+      return;
+    }
+
     const productData = new FormData();
-    
-    // Append the string data to FormData
     productData.append("title", formData.title);
     productData.append("description", formData.description);
     productData.append("price", String(formData.price));
     productData.append("stock", String(formData.stock));
-
-    console.log("Appending product details:");
-    console.log(`Title: ${formData.title}`);
-    console.log(`Description: ${formData.description}`);
-    console.log(`Price: ${formData.price}`);
-    console.log(`Stock: ${formData.stock}`);
 
     try {
       const response = await axios.post("http://localhost:3001/api/v1/products/", productData, {
@@ -49,13 +52,14 @@ const AddProduct: React.FC = () => {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
       });
-      console.log("Product added successfully:", response.data);
       showPopup("Product added successfully!");
-      router.push("/admin/products"); // Redirect after success
+      setFormData({ title: "", description: "", price: 0, stock: 0 }); // Reset form data
+      router.push("/admin/ProductsList"); // Redirect to product list after adding
     } catch (error: any) {
-      console.error("Error adding product:", error.response?.data || error);
-      setError("Failed to add product. Please try again.");
-      showPopup("Failed to add product.");
+      const errorMessage = error.response?.data?.message || "Failed to add product. Please try again.";
+      console.error("Error adding product:", errorMessage);
+      setError(errorMessage);
+      showPopup(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -68,10 +72,7 @@ const AddProduct: React.FC = () => {
       </header>
 
       <main className="flex-grow flex justify-center items-center">
-        <form
-          onSubmit={handleSubmit}
-          className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg"
-        >
+        <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg">
           <h2 className="text-2xl font-bold mb-4">Product Details</h2>
           {error && <div className="text-red-500 mb-4">{error}</div>}
           <div className="mb-4">

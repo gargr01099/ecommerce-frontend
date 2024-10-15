@@ -104,7 +104,7 @@ const Profile: React.FC = () => {
 
                 <Button
                   className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg transition duration-200 ease-in-out"
-                  onClick={() => router.push("/admin/products")}
+                  onClick={() => router.push("/admin/ProductsList")}
                 >
                   Manage Products
                 </Button>
