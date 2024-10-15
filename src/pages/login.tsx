@@ -1,3 +1,4 @@
+'use client'    
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import userService from "../services/userService"; // Your login service
@@ -11,15 +12,9 @@ const Login: React.FC = () => {
   const { showPopup } = usePopup();
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
-  const [username, setUsername] = useState("");
+  const [redirect, setRedirect] = useState(false);
+  const [user, setUser] = useState<any>(null); // Track user information
 
-  //   useEffect(()=>{
-  //     const storedUser = localStorage.getItem("user");
-  //     if(storedUser){
-  //       const user = JSON.parse(storedUser);
-  //       setUsername(user.username);
-  //     }
-  //   },[]);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -30,15 +25,16 @@ const Login: React.FC = () => {
     setLoading(true);
     try {
       const response = await userService.loginUser(formData);
-      const user = response.data;
-      //   localStorage.setItem("user", JSON.stringify(user));
-      //   setUsername(user.username);
-      // Check user role and route accordingly
-      if (user.role === "admin") {
-        router.push("/admin/products"); // Admin: Manage products
-      } else if (user.role === "user") {
-        router.push("/user/profile"); // User: Show profile and reviews
-      }
+      const userData = await response; // Changed to userData for clarity
+    console.log("User Data:", userData.user);
+    // Log user data
+      // Store user information in localStorage for future reference
+      localStorage.setItem("userId", userData.user.id);
+      localStorage.setItem("role", userData.user.role);
+      console.log("userId", userData.user.id);   
+      console.log("role", userData.user.role);   
+      setUser(userData); // Store user data in state
+      setRedirect(true); // Set redirect to true
     } catch (error: any) {
       const errorMessage =
         error.response?.data?.message || "An unexpected error occurred.";
@@ -47,6 +43,20 @@ const Login: React.FC = () => {
       setLoading(false);
     }
   };
+  
+  useEffect(() => {
+    if (redirect && user) { // Check if redirect is true and user is defined
+        console.log("Redirecting...");
+        console.log("User:", user);
+      if (user.role === "admin") {
+        console.log("Admin login successful");
+        router.push("/profile"); // Redirect admin to profile
+      } else if (user.role === "user") {
+        console.log("User login successful");
+        router.push("/profile"); // Redirect user to profile
+      }
+    }
+  }, [redirect, user, router]);
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-green-300 to-blue-600 p-6">

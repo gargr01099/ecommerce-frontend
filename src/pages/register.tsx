@@ -16,9 +16,9 @@ const Register: React.FC = () => {
     username: "",
     email: "",
     password: "",
-    role: "user",
-    address: "",
-    phone: "",
+    role: "admin",
+    address: "mohali,Punjab",
+    phone: "",  
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -34,6 +34,7 @@ const Register: React.FC = () => {
     e.preventDefault();
     try {
       await userService.registerUser(formData);
+      //  localStorage.setItem("user", JSON.stringify(formData));
       console.log("Registration successful");
       router.push("/login"); // Redirect to a success page
     } catch (error: any) {
