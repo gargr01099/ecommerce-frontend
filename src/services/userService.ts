@@ -12,7 +12,18 @@ const registerUser = async (userData:any) => {
     throw error; // Rethrow or handle as needed
   }
 };
+const loginUser =async(userData:any)=>{
+  try{
+    const response =await axios.post(`${API_URL}/signin`,userData);
+    console.log('Login successful:', response.data);  
+    return response.data;
+  }catch(error){
+    console.error('Login failed:', error);  
+    throw error; // Rethrow or handle as needed 
+  }
+}
 
 export default {
   registerUser,
+  loginUser,
 };
