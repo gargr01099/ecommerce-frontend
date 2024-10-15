@@ -1,3 +1,12 @@
+/**
+ * The `Cart` component represents the user's shopping cart. It displays the items in the cart, allows the user to remove items, and provides a button to proceed to the checkout page.
+ *
+ * The component retrieves the cart items from the browser's local storage and updates the state accordingly. It provides a `handleRemoveFromCart` function to remove an item from the cart, and a `handleCheckout` function to navigate to the checkout page.
+ *
+ * The component renders a table displaying the cart items, with columns for the product ID, title, and price. It also includes a "Remove" button for each item, which calls the `handleRemoveFromCart` function when clicked. If the cart is empty, a message is displayed instead of the table.
+ *
+ * At the bottom of the component, a "Checkout" button is rendered, which calls the `handleCheckout` function when clicked.
+ */
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 

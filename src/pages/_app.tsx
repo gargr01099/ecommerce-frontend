@@ -1,3 +1,8 @@
+/**
+ * The main Next.js application component that wraps the entire application.
+ * It sets up the `PopupProvider` context and renders the `Popup` component.
+ * This allows the application to manage and display popup modals throughout the app.
+ */
 import '../styles/global.css';
 import { AppProps } from "next/app";
 import { PopupProvider } from "../context/PopupContext";
