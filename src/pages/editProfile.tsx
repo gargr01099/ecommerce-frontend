@@ -68,9 +68,10 @@ const EditProfile: React.FC = () => {
     e.preventDefault();
     setLoading(true);
     setError(null);
+    console.log('Form Data:', formData); // Add this for debugging
 
     try {
-      await axios.patch(
+      const response  = await axios.patch(
         `http://localhost:3001/api/v1/users/${userId}`,
         formData,
         {
@@ -79,8 +80,9 @@ const EditProfile: React.FC = () => {
           },
         }
       );
+      console.log('Update Response:', response.data); // Add this for debugging
       showPopup("Profile updated successfully!");
-      router.push("/profile"); // Redirect back to profile page after update
+      router.replace("/profile"); // Redirect back to profile page after update
     } catch (error) {
       console.error("Error updating profile:", error);
       setError("Failed to update profile. Please try again.");
