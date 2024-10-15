@@ -12,32 +12,15 @@ const AddProduct: React.FC = () => {
     description: "",
     price: 0,
     stock: 0,
-    images: ["", ""], // For two image URLs
   });
-  const [fileImages, setFileImages] = useState<File[]>([]); // For local files
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // Handles input changes
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, index?: number) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-
-    if (name === "images" && index !== undefined) {
-      const updatedImages = [...formData.images];
-      updatedImages[index] = value;
-      setFormData({ ...formData, images: updatedImages });
-    } else {
-      setFormData({ ...formData, [name]: value });
-    }
-
+    setFormData({ ...formData, [name]: value });
     console.log(`Updated form data:`, formData);
-  };
-
-  // Handles file input changes
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []);
-    setFileImages(files);
-    console.log(`Files selected:`, files);
   };
 
   // Handles form submission
@@ -60,22 +43,9 @@ const AddProduct: React.FC = () => {
     console.log(`Price: ${formData.price}`);
     console.log(`Stock: ${formData.stock}`);
 
-    formData.images.forEach((image, index) => {
-      if (image) {
-        productData.append(`images[${index}]`, image);
-        console.log(`Appended image URL ${index + 1}:`, image);
-      }
-    });
-
-    fileImages.forEach((file, index) => {
-      productData.append("images", file);
-      console.log(`Appended file image ${index + 1}:`, file);
-    });
-
     try {
       const response = await axios.post("http://localhost:3001/api/v1/products/", productData, {
         headers: {
-          "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
       });
@@ -147,30 +117,7 @@ const AddProduct: React.FC = () => {
               required
             />
           </div>
-          <div className="mb-4">
-            <label className="block mb-2 text-gray-700">Image URLs:</label>
-            {formData.images.map((image, index) => (
-              <input
-                key={index}
-                type="text"
-                name="images"
-                value={image}
-                onChange={(e) => handleChange(e, index)}
-                placeholder={`Image URL ${index + 1}`}
-                className="w-full p-2 border border-gray-300 rounded mb-2"
-              />
-            ))}
-          </div>
-          <div className="mb-4">
-            <label className="block mb-2 text-gray-700">Upload Images:</label>
-            <input
-              type="file"
-              accept="image/*"
-              multiple
-              onChange={handleFileChange}
-              className="w-full border border-gray-300 rounded"
-            />
-          </div>
+
           <Button
             className={`w-full ${loading ? 'bg-gray-500' : 'bg-blue-500 hover:bg-blue-600'} text-white font-bold py-2 rounded`}
             type="submit"
