@@ -61,7 +61,7 @@ const ProductPage: React.FC = () => {
       orderedProducts: [
         {
           id: product.id, // Product ID
-          product_unit_price: product.price, // Price of the product
+          // product_unit_price: product.price, // Price of the product
           product_quantity: 1, // You can modify this based on user input
         },
       ],

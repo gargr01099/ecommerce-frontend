@@ -1,8 +1,8 @@
-"use client"; 
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
-import ProductEditModal from "../../components/ProductEditModal"; // Import the modal component
+import ProductEditModal from "../../components/ProductEditModal";
+import OrderModal from "../../components/OrderModal";
 
 const ProductsList: React.FC = () => {
   const router = useRouter();
@@ -12,6 +12,7 @@ const ProductsList: React.FC = () => {
   const [role, setRole] = useState<string | null>(null);
   const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
 
   useEffect(() => {
     const storedRole = localStorage.getItem("role");
@@ -22,7 +23,6 @@ const ProductsList: React.FC = () => {
     const fetchProducts = async () => {
       try {
         const response = await axios.get("http://localhost:3001/api/v1/products/");
-        console.log("API Response:", response.data);
         if (Array.isArray(response.data)) {
           setProducts(response.data);
         } else if (response.data.products) {
@@ -42,37 +42,29 @@ const ProductsList: React.FC = () => {
   }, []);
 
   const handleAddToCart = (productId: number) => {
-    console.log(`Product ${productId} added to cart.`);
+    const existingCart = JSON.parse(localStorage.getItem("cart") || "[]");
+    const productToAdd = products.find(product => product.id === productId);
+    
+    if (productToAdd) {
+      existingCart.push(productToAdd);
+      localStorage.setItem("cart", JSON.stringify(existingCart));
+      console.log(`Product ${productId} added to cart.`);
+    }
   };
 
-  const handleBuyNow = async (product: any) => {
-    const shippingAddress = {
-      phone: "+1-234-567-8900",
-      name: "Jane Doe",
-      address: "456 Elm St",
-      city: "Metropolis",
-      postCode: "54321",
-      state: "NY",
-      country: "USA"
-    };
+  const handleBuyNow = (product: any) => {
+    setSelectedProduct(product);
+    setIsOrderModalOpen(true);
+  };
 
-    const orderedProducts = [
-      {
-        id: product.id,
-        product_unit_price: product.price,
-        product_quantity: 1
-      }
-    ];
-
-    const orderPayload = {
-      shippingAddress,
-      orderedProducts
-    };
+  const handleOrderSubmit = async (shippingAddress: any, orderedProducts: any[]) => {
+    const orderPayload = { shippingAddress, orderedProducts };
 
     try {
       const response = await axios.post("http://localhost:3001/api/v1/orders/", orderPayload);
       console.log("Order placed successfully:", response.data);
       alert("Order placed successfully!");
+      setIsOrderModalOpen(false); // Close the modal after placing the order
     } catch (error) {
       console.error("Error placing order:", error);
       alert("Failed to place order. Please try again.");
@@ -175,6 +167,14 @@ const ProductsList: React.FC = () => {
       <footer className="w-full bg-gray-800 text-white p-4 mt-8">
         <div className="container mx-auto text-center">
           <p>© 2023 ECommerce Store. All rights reserved.</p>
+          {role === "user" && (
+            <button
+              className="bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-4 rounded-lg transition duration-200 ease-in-out"
+              onClick={() => router.push("/user/cart")}
+            >
+              View Cart
+            </button>
+          )}
         </div>
       </footer>
 
@@ -183,6 +183,13 @@ const ProductsList: React.FC = () => {
         onClose={() => setIsModalOpen(false)}
         product={selectedProduct}
         onUpdate={handleUpdateProduct}
+      />
+
+      <OrderModal
+        isOpen={isOrderModalOpen}
+        onClose={() => setIsOrderModalOpen(false)}
+        product={selectedProduct}
+        onSubmit={handleOrderSubmit}
       />
     </div>
   );
