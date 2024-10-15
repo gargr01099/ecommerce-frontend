@@ -1,3 +1,12 @@
+/**
+ * The `Profile` component is the main component for the user's profile page. It fetches the user's profile data, either for an admin or a regular user, and displays the relevant information. The component also provides a sidebar menu with options for managing the profile, browsing products, viewing the cart, and logging out.
+ *
+ * The component uses the `useEffect` hooks to fetch the user's profile data and handle the loading and error states. It also uses the `useRouter` hook from Next.js to handle navigation.
+ *
+ * The component renders the profile information, including the user's name, email, address, phone, and role. For admin users, it also provides links to manage products and orders. For regular users, it provides links to browse products and view the cart.
+ *
+ * The component also includes a footer with a copyright notice.
+ */
 'use client';
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
@@ -101,6 +110,14 @@ const Profile: React.FC = () => {
                     onClick={() => router.push("/admin/products")}
                   >
                     Manage Products
+                  </Button>
+                </li>
+                <li>
+                  <Button
+                    className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg"
+                    onClick={() => router.push("/admin/products")}
+                  >
+                    Add Product
                   </Button>
                 </li>
                 <li>
