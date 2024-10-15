@@ -92,6 +92,12 @@ const Profile: React.FC = () => {
             >
               Manage Profile
             </Button>
+            <Button
+                  className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg transition duration-200 ease-in-out"
+                  onClick={() => router.push("/ProductPage")}
+                >
+                  List Products
+                </Button>
 
             {role === "admin" && (
               <>
@@ -124,12 +130,6 @@ const Profile: React.FC = () => {
             )}
             {role === "user" && (
               <>
-                <Button
-                  className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-lg transition duration-200 ease-in-out"
-                  onClick={() => router.push("/user/products")}
-                >
-                  Browse Products
-                </Button>
                 <Button
                   className="bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-4 rounded-lg transition duration-200 ease-in-out"
                   onClick={() => router.push("/user/cart")}
