@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:3001/api/v1/users'; // Ensure this is the correct endpoint
+const API_URL = 'http://localhost:3001/api/users'; // Ensure this is the correct endpoint
 
 const registerUser = async (userData:any) => {
   try {
